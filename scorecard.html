@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Signal Scorecard · public accountability ledger</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:title" content="Signal Scorecard">
+<meta property="og:description" content="Every signal posted. Every D+5 outcome. Wins AND losses, on a schedule.">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0e14; --fg: #e6e1cf; --dim: #5c6773; --acc: #ffb454;
+    --win: #91b362; --loss: #f07178; --line: #1f2630; --card: #11161d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 15px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .tagline { color: var(--dim); margin: 0 0 32px; }
+  .hero {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin: 24px 0 32px;
+  }
+  .stat {
+    background: var(--card); border: 1px solid var(--line); padding: 16px;
+    border-radius: 6px;
+  }
+  .stat .label { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .stat .value { font-size: 28px; font-weight: 600; margin-top: 4px; }
+  .stat .sub { color: var(--dim); font-size: 12px; margin-top: 2px; }
+  .stat .value.acc { color: var(--acc); }
+  .stat .value.win { color: var(--win); }
+  .stat .value.loss { color: var(--loss); }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em;
+       color: var(--dim); margin: 32px 0 12px; font-weight: 600; }
+  .chart { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card);
+           border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: none; }
+  .r { text-align: right; }
+  .ticker { color: var(--acc); font-weight: 600; }
+  .win { color: var(--win); }
+  .loss { color: var(--loss); }
+  .muted { color: var(--dim); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
+  footer { margin-top: 48px; color: var(--dim); font-size: 12px; border-top: 1px solid var(--line); padding-top: 16px; }
+  a { color: var(--acc); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Signal Scorecard</h1>
+  <p class="tagline">Every signal posted on the feed. Every D+5 outcome vs SPY.<br>
+     Wins <em>and</em> losses, published on a schedule. Collecting since 2026-06-19.</p>
+
+  <div class="hero">
+    <div class="stat">
+      <div class="label">Signals shipped</div>
+      <div class="value acc">3</div>
+      <div class="sub">posted to Twitter</div>
+    </div>
+    <div class="stat">
+      <div class="label">D+5 sample size</div>
+      <div class="value">0</div>
+      <div class="sub">outcomes measured</div>
+    </div>
+    <div class="stat">
+      <div class="label">Win rate vs SPY</div>
+      <div class="value ">—</div>
+      <div class="sub">D+5 alpha &gt; 0</div>
+    </div>
+    <div class="stat">
+      <div class="label">Mean D+5 alpha</div>
+      <div class="value ">—</div>
+      <div class="sub">vs SPY benchmark</div>
+    </div>
+  </div>
+
+  <h2>Cumulative D+5 alpha (mean per day, vs SPY)</h2>
+  <div class="chart"><canvas id="chart" height="120"></canvas></div>
+
+  <div class="grid2">
+    <div>
+      <h2>Best D+5 picks</h2>
+      <table><tr><td colspan='4' class='muted'>collecting — first D+5 outcome lands Mon-Fri after a posted signal completes 5 trading days</td></tr></table>
+    </div>
+    <div>
+      <h2>Worst D+5 picks</h2>
+      <table><tr><td colspan='4' class='muted'>collecting — first D+5 outcome lands Mon-Fri after a posted signal completes 5 trading days</td></tr></table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <h2>By source</h2>
+      <table><tr><td>neptune</td><td class='r'>3</td></tr></table>
+    </div>
+    <div>
+      <h2>By setup</h2>
+      <table><tr><td>PULLBACK_50D</td><td class='r'>2</td></tr><tr><td>FRESH_52W_HIGH</td><td class='r'>1</td></tr></table>
+    </div>
+  </div>
+
+  <footer>
+    Updated 2026-06-20 11:33 PDT ·
+    Methodology: every posted ticker's close-to-close return is computed at D+1/5/10/20 trading days
+    and benchmarked against SPY over the same window. Alpha = ticker return − SPY return.
+    Source data: yfinance. Not financial advice.
+  </footer>
+</main>
+
+<script>
+const cfg = {"labels": [], "data": []};
+const ctx = document.getElementById('chart');
+if (cfg.labels.length === 0) {
+  ctx.parentElement.innerHTML = '<div style="color:#5c6773;text-align:center;padding:48px 0">no D+5 outcomes yet — first chart point lands ~5 trading days after the earliest signal</div>';
+} else {
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: cfg.labels,
+      datasets: [{
+        label: 'Cumulative D+5 alpha %',
+        data: cfg.data,
+        borderColor: '#ffb454', backgroundColor: 'rgba(255,180,84,0.1)',
+        borderWidth: 2, tension: 0.3, fill: true, pointRadius: 3,
+      }],
+    },
+    options: {
+      plugins: { legend: { labels: { color: '#e6e1cf' } } },
+      scales: {
+        x: { ticks: { color: '#5c6773' }, grid: { color: '#1f2630' } },
+        y: { ticks: { color: '#5c6773', callback: v => v.toFixed(1) + '%' },
+              grid: { color: '#1f2630' } },
+      },
+    },
+  });
+}
+</script>
+</body>
+</html>
