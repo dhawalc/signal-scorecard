@@ -67,17 +67,17 @@
     </div>
     <div class="stat">
       <div class="label">D+5 sample size</div>
-      <div class="value">0</div>
+      <div class="value">3</div>
       <div class="sub">outcomes measured</div>
     </div>
     <div class="stat">
       <div class="label">Win rate vs SPY</div>
-      <div class="value ">—</div>
+      <div class="value loss">33.3%</div>
       <div class="sub">D+5 alpha &gt; 0</div>
     </div>
     <div class="stat">
       <div class="label">Mean D+5 alpha</div>
-      <div class="value ">—</div>
+      <div class="value win">+0.05%</div>
       <div class="sub">vs SPY benchmark</div>
     </div>
   </div>
@@ -88,11 +88,11 @@
   <div class="grid2">
     <div>
       <h2>Best D+5 picks</h2>
-      <table><tr><td colspan='4' class='muted'>collecting — first D+5 outcome lands Mon-Fri after a posted signal completes 5 trading days</td></tr></table>
+      <table><tr><td class='ticker'>$MSGS</td><td>neptune · pullback 50d</td><td class='r win'>+8.56%</td><td class='r muted'>2026-06-20</td></tr><tr><td class='ticker'>$INTC</td><td>neptune · fresh 52w high</td><td class='r loss'>-1.85%</td><td class='r muted'>2026-06-20</td></tr><tr><td class='ticker'>$GOOG</td><td>neptune · pullback 50d</td><td class='r loss'>-6.54%</td><td class='r muted'>2026-06-20</td></tr></table>
     </div>
     <div>
       <h2>Worst D+5 picks</h2>
-      <table><tr><td colspan='4' class='muted'>collecting — first D+5 outcome lands Mon-Fri after a posted signal completes 5 trading days</td></tr></table>
+      <table><tr><td class='ticker'>$GOOG</td><td>neptune · pullback 50d</td><td class='r loss'>-6.54%</td><td class='r muted'>2026-06-20</td></tr><tr><td class='ticker'>$INTC</td><td>neptune · fresh 52w high</td><td class='r loss'>-1.85%</td><td class='r muted'>2026-06-20</td></tr><tr><td class='ticker'>$MSGS</td><td>neptune · pullback 50d</td><td class='r win'>+8.56%</td><td class='r muted'>2026-06-20</td></tr></table>
     </div>
   </div>
 
@@ -108,7 +108,7 @@
   </div>
 
   <footer>
-    Updated 2026-06-26 14:50 PDT ·
+    Updated 2026-06-29 14:50 PDT ·
     Methodology: every posted ticker's close-to-close return is computed at D+1/5/10/20 trading days
     and benchmarked against SPY over the same window. Alpha = ticker return − SPY return.
     Source data: yfinance. Not financial advice.
@@ -116,7 +116,7 @@
 </main>
 
 <script>
-const cfg = {"labels": [], "data": []};
+const cfg = {"labels": ["2026-06-20"], "data": [0.054]};
 const ctx = document.getElementById('chart');
 if (cfg.labels.length === 0) {
   ctx.parentElement.innerHTML = '<div style="color:#5c6773;text-align:center;padding:48px 0">no D+5 outcomes yet — first chart point lands ~5 trading days after the earliest signal</div>';
